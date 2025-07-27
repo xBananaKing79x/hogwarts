@@ -1,5 +1,6 @@
 package ru.hogwarts.school_test.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school_test.model.Faculty;
@@ -24,15 +25,23 @@ public class FacultyController {
     }
 
     // получение факультета по ID
-    @GetMapping("/{id}")
-    public Faculty getFaculty(@PathVariable Long id) {
-        return facultyService.getFacultyById(id);
+    @GetMapping ("/{id}") // GET http://localhost:8080/Faculty/id
+    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable long id) {
+        Faculty faculty = facultyService.getFacultyById(id);
+        if (faculty == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(faculty);
     }
 
     // обновление факультета
     @PutMapping
-    public Faculty updateFaculty(@RequestBody Faculty faculty) {
-        return facultyService.updateFaculty(faculty);
+    public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty) {
+        Faculty updateFaculty = facultyService.updateFaculty(faculty);
+        if (updateFaculty == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return ResponseEntity.ok(updateFaculty);
     }
 
     // DELETE - удаление факультета
@@ -44,13 +53,13 @@ public class FacultyController {
 
     // READ ALL - получение всех факультетов
     @GetMapping
-    public Collection<Faculty> getAllFaculties() {
-        return facultyService.getAllFaculties();
+    public ResponseEntity<Collection<Faculty>> getAllFaculties() {
+        return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 
-    // Фильтрация факультетов по цвету (возвращен к исходному значению)
-    @GetMapping("/color/{color}")
-    public Collection<Faculty> getFacultiesByColor(@PathVariable String color) {
-        return facultyService.getFacultiesByColor(color);
-    }
+//    // Фильтрация факультетов по цвету (возвращен к исходному значению)
+//    @GetMapping("/color/{color}")
+//    public ResponseEntity<Collection<Faculty>> getFacultiesByColor(@PathVariable String color) {
+//        return ResponseEntity.ok(facultyService.getFacultiesByColor(color));
+//    }
 }

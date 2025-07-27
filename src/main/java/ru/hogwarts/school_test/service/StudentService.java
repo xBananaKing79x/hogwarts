@@ -5,8 +5,7 @@ import ru.hogwarts.school_test.model.Student;
 import ru.hogwarts.school_test.repositories.StudentRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.stream.Collectors;
+
 
 @Service
 public class StudentService {
@@ -24,7 +23,7 @@ public class StudentService {
 
     // получение студента по ID
     public Student getStudentById(long id) {
-        return studentRepository.getById(id);
+        return studentRepository.findById(id).get();
     }
 
     // получение всех студентов

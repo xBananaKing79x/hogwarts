@@ -27,7 +27,7 @@ public class FacultyService {
     // получение факультета по ID
     public Faculty getFacultyById(long id) {
 
-        return (Faculty) facultyRepository.getById(id);
+        return (Faculty) facultyRepository.findById(id).get();
     }
 
     // получение всех факультетов
@@ -46,10 +46,5 @@ public class FacultyService {
     public void deleteFaculty(long id) {
          facultyRepository.deleteById(id);
     }
-    // Фильтрация факультетов по цвету
-    public Collection<Faculty> getFacultiesByColor(String color) {
-        return faculties.values().stream()
-                .filter(faculty -> faculty.getColor().equals(color))
-                .collect(Collectors.toList());
-    }
+
 }
