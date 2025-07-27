@@ -2,6 +2,7 @@ package ru.hogwarts.school_test.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school_test.model.Faculty;
+import ru.hogwarts.school_test.repositories.FacultyRepository;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,35 +11,40 @@ import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
-private long idCounter = 1;
-    private final HashMap<Long, Faculty> faculties = new HashMap <> ();
+
+    private final FacultyRepository facultyRepository;
+
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     // создание факультета
     public Faculty createFaculty(Faculty faculty) {
-        faculty.setId(idCounter++);
-        faculties.put(idCounter, faculty);
-        return faculty;
+
+        return (Faculty) facultyRepository.save(faculty);
     }
 
     // получение факультета по ID
     public Faculty getFacultyById(long id) {
-        return faculties.get(id);
+
+        return (Faculty) facultyRepository.getById(id);
     }
 
     // получение всех факультетов
     public Collection<Faculty> getAllFaculties() {
-        return faculties.values();
+
+        return facultyRepository.findAll();
     }
 
     // обновление факультета
     public Faculty updateFaculty(Faculty faculty) {
-            faculties.put(faculty.getId(), faculty);
-            return faculty;
+
+            return (Faculty) facultyRepository.save(faculty);
     }
 
     // удаление факультета
-    public Faculty deleteFaculty(long id) {
-        return faculties.remove(id);
+    public void deleteFaculty(long id) {
+         facultyRepository.deleteById(id);
     }
     // Фильтрация факультетов по цвету
     public Collection<Faculty> getFacultiesByColor(String color) {

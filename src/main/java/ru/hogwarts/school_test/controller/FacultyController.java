@@ -1,5 +1,6 @@
 package ru.hogwarts.school_test.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school_test.model.Faculty;
 import ru.hogwarts.school_test.service.FacultyService;
@@ -36,8 +37,9 @@ public class FacultyController {
 
     // DELETE - удаление факультета
     @DeleteMapping("/{id}")
-    public void deleteFaculty(@PathVariable Long id) {
+    public ResponseEntity deleteFaculty(@PathVariable Long id) {
         facultyService.deleteFaculty(id);
+        return ResponseEntity.ok().build();
     }
 
     // READ ALL - получение всех факультетов
