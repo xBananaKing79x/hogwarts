@@ -1,8 +1,8 @@
 package ru.hogwarts.school_test.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Faculty {
@@ -11,6 +11,10 @@ public class Faculty {
     private Long id;
     private String name;
     private String color;
+
+    // Двусторонняя связь OneToMany с Student
+    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Student> students;
 
     // Конструктор
     public Faculty(Long id, String name, String color) {

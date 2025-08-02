@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school_test.model.Faculty;
 import ru.hogwarts.school_test.model.Student;
 import ru.hogwarts.school_test.service.StudentService;
 
@@ -52,6 +53,20 @@ public class StudentController {
     public ResponseEntity deleteStudent(@PathVariable long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
+    }
+
+    // Получение студентов по диапазону возраста
+    @GetMapping("/age")
+    public Collection<Student> getStudentsByAgeBetween(
+            @RequestParam("min") int min,
+            @RequestParam("max") int max) {
+        return studentService.getStudentsByAgeBetween(min, max);
+    }
+
+    // Получить факультет студента
+    @GetMapping("/{id}/faculty")
+    public Faculty getFacultyByStudent(@PathVariable Long id) {
+        return studentService.getFacultyByStudentId(id);
     }
 }
 
