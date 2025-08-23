@@ -4,6 +4,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Avatar {
     @Id
     private long avatarId;
@@ -50,17 +53,39 @@ public class Avatar {
     }
 
     public void setPreview(byte[] bytes) {
+        this.data = data;
     }
 
     public String getMediaType() {
         return this.mediaType = mediaType;
     }
 
-    public Object getPreview() {
-        return this.data = data;
+    public byte[] getPreview() {
+        return data = data;
     }
 
     public long getFileSize() {
         return this.fileSize = fileSize;
+    }
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(avatarId, filePath, mediaType, fileSize, student);
+        result = 31 * result + Arrays.hashCode(data);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Avatar{" +
+                "id=" + avatarId +
+                ", filePath='" + filePath + '\'' +
+                ", mediaType='" + mediaType + '\'' +
+                ", fileSize=" + fileSize +
+                ", data=" + Arrays.toString(data) +
+                ", student=" + student +
+                '}';
     }
 }

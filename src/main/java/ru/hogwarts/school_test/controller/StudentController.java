@@ -16,7 +16,7 @@ import ru.hogwarts.school_test.service.StudentService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.http.HttpHeaders;
+import org.springframework.http.HttpHeaders;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -82,10 +82,10 @@ public class StudentController {
 
     // Получение аватара из БД)
     @GetMapping(value = "/{studentID}/avatar/preview")
-    public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long ID) {
+    public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long studentID) {
         Avatar avatar = avatarService.findAvatar(studentId);
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType());
+        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
         headers.setContentLength(avatar.getPreview().length);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getPreview());
     }
