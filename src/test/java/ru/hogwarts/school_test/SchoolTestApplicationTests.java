@@ -20,8 +20,9 @@ class SchoolTestApplicationTests {
     private TestRestTemplate restTemplate;
 
     @Test
-    void contextLoad() throws Exception  {
+    void contextLoad() throws Exception {
         Assertions.assertThat(studentController).isNotNull();
     }
+
 
 }

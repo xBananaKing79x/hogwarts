@@ -7,6 +7,8 @@ import ru.hogwarts.school_test.repositories.FacultyRepository;
 import ru.hogwarts.school_test.repositories.StudentRepository;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
@@ -28,7 +30,7 @@ public class FacultyService {
     // получение факультета по ID
     public Faculty getFacultyById(long id) {
 
-        return (Faculty) facultyRepository.findById(id).get();
+        return (Faculty) facultyRepository.findAllById(Collections.singleton(id));
     }
 
     // получение всех факультетов
@@ -52,10 +54,18 @@ public class FacultyService {
     public Collection<Faculty> getFacultiesByNameOrColorIgnoreCase(String nameOrColor) {
         return facultyRepository.findByNameOrColorIgnoreCase(nameOrColor, nameOrColor);
     }
+
     // Получить студентов факультета
     public Collection<Student> getStudentsByFacultyId(Long facultyId) {
         return studentRepository.findByFacultyId(facultyId);
 
+    }
+
+    // Фильтрация факультетов по цвету
+    public Collection<Faculty> getFacultiesByColor(String color) {
+        return facultyRepository.findAll().stream()
+                .filter((Faculty)faculty -> faculty.getColor().equals(color))
+                .collect(Collectors.toList());
     }
 }
 
