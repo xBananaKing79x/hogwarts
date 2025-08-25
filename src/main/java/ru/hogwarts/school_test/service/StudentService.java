@@ -1,12 +1,12 @@
 package ru.hogwarts.school_test.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school_test.model.Faculty;
 import ru.hogwarts.school_test.model.Student;
 import ru.hogwarts.school_test.repositories.StudentRepository;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 
 @Service
