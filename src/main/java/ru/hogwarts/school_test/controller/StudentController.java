@@ -65,6 +65,7 @@ public class StudentController {
 
     @DeleteMapping ("/{studentID}") // DELETE http://localhost:8080/student/id
     public ResponseEntity deleteStudent(@PathVariable long id) {
+      
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
@@ -115,6 +116,23 @@ public class StudentController {
     @GetMapping("/{id}/faculty")
     public Faculty getFacultyByStudent(@PathVariable Long id) {
         return studentService.getFacultyByStudentId(id);
+    }
+    // Получить количество всех студентов в школе
+    @GetMapping("/count")
+    public int getCountOfAllStudents() {
+        return studentService.getCountOfAllStudents();
+    }
+
+    // Получить средний возраст студентов
+    @GetMapping("/average-age")
+    public double getAverageAgeOfStudents() {
+        return studentService.getAverageAgeOfStudents();
+    }
+
+    // Получить пять последних студентов
+    @GetMapping("/last-five")
+    public Collection<Student> getLastFiveStudents() {
+        return studentService.getLastFiveStudents();
     }
 }
 

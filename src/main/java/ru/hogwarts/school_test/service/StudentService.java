@@ -53,5 +53,21 @@ public class StudentService {
         Student student = studentRepository.findById(studentId).orElse(null);
         return student != null ? student.getFaculty() : null;
     }
+
+    // Получить количество всех студентов в школе
+    public int getCountOfAllStudents() {
+        return studentRepository.getCountOfAllStudents();
+    }
+
+    // Получить средний возраст студентов
+    public double getAverageAgeOfStudents() {
+        return studentRepository.getAverageAgeOfStudents();
+    }
+
+    // Получить пять последних студентов
+    public Collection<Student> getLastFiveStudents() {
+        return studentRepository.getLastFiveStudents();
+    }
+
 }
 
