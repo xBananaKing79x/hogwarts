@@ -12,7 +12,6 @@ import ru.hogwarts.school_test.model.Faculty;
 import ru.hogwarts.school_test.model.Student;
 import ru.hogwarts.school_test.service.AvatarService;
 import ru.hogwarts.school_test.service.StudentService;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
