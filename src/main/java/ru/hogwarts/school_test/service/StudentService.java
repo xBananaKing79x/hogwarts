@@ -1,6 +1,6 @@
 package ru.hogwarts.school_test.service;
-
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school_test.model.Faculty;
 import ru.hogwarts.school_test.model.Student;
@@ -8,11 +8,11 @@ import ru.hogwarts.school_test.repositories.StudentRepository;
 
 import java.util.Collection;
 
-
 @Service
 public class StudentService {
 
     private StudentRepository studentRepository;
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
@@ -20,54 +20,152 @@ public class StudentService {
 
     // создание студента
     public Student createStudent(Student student) {
-        return studentRepository.save(student);
+        logger.info("Was invoked method for create student");
+        try {
+            Student createdStudent = studentRepository.save(student);
+            logger.debug("Successfully created student with id: {}", createdStudent.getId());
+            return createdStudent;
+        } catch (Exception e) {
+            logger.error("Error occurred while creating student: {}", e.getMessage());
+            throw e;
+        }
     }
 
     // получение студента по ID
     public Student getStudentById(long id) {
-        return studentRepository.findById(id).get();
+        logger.info("Was invoked method for get student by id: {}", id);
+        try {
+            Student student = studentRepository.findById(id).orElse(null);
+            if (student == null) {
+                logger.warn("Student with id {} not found", id);
+            } else {
+                logger.debug("Successfully found student with id: {}", id);
+            }
+            return student;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting student by id {}: {}", id, e.getMessage());
+            throw e;
+        }
     }
 
     // получение всех студентов
     public Collection<Student> getAllStudents() {
-
-        return studentRepository.findAll();
+        logger.info("Was invoked method for get all students");
+        try {
+            Collection<Student> students = studentRepository.findAll();
+            logger.debug("Successfully retrieved {} students", students.size());
+            return students;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting all students: {}", e.getMessage());
+            throw e;
+        }
     }
 
     // обновление студента
     public Student updateStudent(Student student) {
-        return studentRepository.save(student);
+        logger.info("Was invoked method for update student with id: {}", student.getId());
+        try {
+            if (studentRepository.existsById(student.getId())) {
+                Student updatedStudent = studentRepository.save(student);
+                logger.debug("Successfully updated student with id: {}", student.getId());
+                return updatedStudent;
+            } else {
+                logger.warn("Attempt to update non-existent student with id: {}", student.getId());
+                return null;
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred while updating student with id {}: {}", student.getId(), e.getMessage());
+            throw e;
+        }
     }
 
     // удаление студента
     public void deleteStudent(long id) {
-        studentRepository.deleteById(id);
+        logger.info("Was invoked method for delete student with id: {}", id);
+        try {
+            if (studentRepository.existsById(id)) {
+                studentRepository.deleteById(id);
+                logger.debug("Successfully deleted student with id: {}", id);
+            } else {
+                logger.warn("Attempt to delete non-existent student with id: {}", id);
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred while deleting student with id {}: {}", id, e.getMessage());
+            throw e;
+        }
     }
 
     // Получение студентов по диапазону возраста
     public Collection<Student> getStudentsByAgeBetween(int min, int max) {
-        return studentRepository.findByAgeBetween(min, max);
+        logger.info("Was invoked method for get students by age between {} and {}", min, max);
+        try {
+            Collection<Student> students = studentRepository.findByAgeBetween(min, max);
+            logger.debug("Successfully found {} students with age between {} and {}", students.size(), min, max);
+            return students;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting students by age between {} and {}: {}", min, max, e.getMessage());
+            throw e;
+        }
     }
+
     // Получить факультет студента
     public Faculty getFacultyByStudentId(Long studentId) {
-        Student student = studentRepository.findById(studentId).orElse(null);
-        return student != null ? student.getFaculty() : null;
+        try{
+            Student student = studentRepository.findById(studentId).orElse(null);
+            if (student == null) {
+                logger.warn("Student with id {} not found when trying to get faculty", studentId);
+                return null;
+            }
+            Faculty faculty = student.getFaculty();
+            if (faculty == null) {
+                logger.debug("Student with id {} has no assigned faculty", studentId);
+            } else {
+                logger.debug("Successfully found faculty {} for student with id {}", faculty.getId(), studentId);
+            }
+            return faculty;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting faculty by student id {}: {}", studentId, e.getMessage());
+            throw e;
+        }
     }
 
     // Получить количество всех студентов в школе
     public int getCountOfAllStudents() {
-        return studentRepository.getCountOfAllStudents();
+        logger.info("Was invoked method for get count of all students");
+        try {
+            int count = studentRepository.getCountOfAllStudents();
+            logger.debug("Successfully retrieved count of all students: {}", count);
+            return count;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting count of all students: {}", e.getMessage());
+            throw e;
+        }
     }
 
     // Получить средний возраст студентов
     public double getAverageAgeOfStudents() {
-        return studentRepository.getAverageAgeOfStudents();
+        logger.info("Was invoked method for get average age of students");
+        try {
+            double averageAge = studentRepository.getAverageAgeOfStudents();
+            logger.debug("Successfully calculated average age of students: {}", averageAge);
+            return averageAge;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting average age of students: {}", e.getMessage());
+            throw e;
+        }
     }
 
     // Получить пять последних студентов
     public Collection<Student> getLastFiveStudents() {
-        return studentRepository.getLastFiveStudents();
+        logger.info("Was invoked method for get last five students");
+        try {
+            Collection<Student> students = studentRepository.getLastFiveStudents();
+            logger.debug("Successfully retrieved last {} students", students.size());
+            return students;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting last five students: {}", e.getMessage());
+            throw e;
+        }
     }
-
 }
 

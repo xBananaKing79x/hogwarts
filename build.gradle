@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.3'
 	id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.liquibase.gradle' version '2.2.0'  // Добавляем плагин Liquibase
 }
 
 group = 'ru.hogwarts'
@@ -24,9 +25,22 @@ dependencies {
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.5'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.liquibase:liquibase-core:4.24.0'
+    runtimeOnly 'org.liquibase:liquibase-gradle-plugin:2.2.0'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
 testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+liquibase {
+    activities {
+        main {
+            changeLogFile 'src/main/resources/db/changelog/db.changelog-master.yaml'
+            url project.ext.has('dbUrl') ? project.ext.dbUrl : 'jdbc:postgresql://localhost:5432/hogwarts'
+            username project.ext.has('dbUsername') ? project.ext.dbUsername : 'student'
+            password project.ext.has('dbPassword') ? project.ext.dbPassword : 'chocolateFrog'
+        }
+    }
+}
