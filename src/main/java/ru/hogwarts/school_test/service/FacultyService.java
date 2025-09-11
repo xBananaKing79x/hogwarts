@@ -1,5 +1,7 @@
 package ru.hogwarts.school_test.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school_test.model.Faculty;
 import ru.hogwarts.school_test.model.Student;
@@ -12,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
-
+    private static final Logger logger = LoggerFactory.getLogger(FacultyService.class);
     private final FacultyRepository facultyRepository;
     private final StudentRepository studentRepository;
 
@@ -24,48 +26,112 @@ public class FacultyService {
     // создание факультета
     public Faculty createFaculty(Faculty faculty) {
 
-        return (Faculty) facultyRepository.save(faculty);
+        logger.info("Was invoked method for create faculty");
+        try {
+            Faculty createdFaculty = (Faculty) facultyRepository.save(faculty);
+            logger.debug("Successfully created faculty with id: {}", createdFaculty.getId());
+            return createdFaculty;
+        } catch (Exception e) {
+            logger.error("Error occurred while creating faculty: {}", e.getMessage());
+            throw e;
+        }
     }
 
     // получение факультета по ID
     public Faculty getFacultyById(long id) {
 
-        return (Faculty) facultyRepository.findAllById(Collections.singleton(id));
+        logger.info("Was invoked method for get faculty by id: {}", id);
+        try {
+            Faculty faculty = (Faculty) facultyRepository.findById(id).orElse(null);
+            if (faculty == null) {
+                logger.warn("Faculty with id {} not found", id);
+            } else {
+                logger.debug("Successfully found faculty with id: {}", id);
+            }
+            return faculty;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting faculty by id {}: {}", id, e.getMessage());
+            throw e;
+        }
     }
 
     // получение всех факультетов
     public Collection<Faculty> getAllFaculties() {
 
-        return facultyRepository.findAll();
+        logger.info("Was invoked method for get all faculties");
+        try {
+            Collection<Faculty> faculties = facultyRepository.findAll();
+            logger.debug("Successfully retrieved {} faculties", faculties.size());
+            return faculties;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting all faculties: {}", e.getMessage());
+            throw e;
+        }
     }
 
     // обновление факультета
     public Faculty updateFaculty(Faculty faculty) {
 
-        return (Faculty) facultyRepository.save(faculty);
+        logger.info("Was invoked method for update faculty with id: {}", faculty.getId());
+        try {
+            if (facultyRepository.existsById(faculty.getId())) {
+                Faculty updatedFaculty = (Faculty) facultyRepository.save(faculty);
+                logger.debug("Successfully updated faculty with id: {}", faculty.getId());
+                return updatedFaculty;
+            } else {
+                logger.warn("Attempt to update non-existent faculty with id: {}", faculty.getId());
+                return null;
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred while updating faculty with id {}: {}", faculty.getId(), e.getMessage());
+            throw e;
+        }
     }
 
     // удаление факультета
     public void deleteFaculty(long id) {
-        facultyRepository.deleteById(id);
+        logger.info("Was invoked method for delete faculty with id: {}", id);
+        try {
+            if (facultyRepository.existsById(id)) {
+                facultyRepository.deleteById(id);
+                logger.debug("Successfully deleted faculty with id: {}", id);
+            } else {
+                logger.warn("Attempt to delete non-existent faculty with id: {}", id);
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred while deleting faculty with id {}: {}", id, e.getMessage());
+            throw e;
+        }
     }
 
     // Поиск факультетов по имени или цвету, игнорируя регистр
     public Collection<Faculty> getFacultiesByNameOrColorIgnoreCase(String nameOrColor) {
-        return facultyRepository.findByNameOrColorIgnoreCase(nameOrColor, nameOrColor);
+        logger.info("Was invoked method for get faculties by name or color ignore case: {}", nameOrColor);
+        try {
+            Collection<Faculty> faculties = facultyRepository.findByNameOrColorIgnoreCase(nameOrColor, nameOrColor);
+            logger.debug("Successfully found {} faculties by name or color ignore case: {}", faculties.size(), nameOrColor);
+            return faculties;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting faculties by name or color ignore case {}: {}", nameOrColor, e.getMessage());
+            throw e;
+        }
     }
 
     // Получить студентов факультета
     public Collection<Student> getStudentsByFacultyId(Long facultyId) {
-        return studentRepository.findByFacultyId(facultyId);
-
-    }
-
-    // Фильтрация факультетов по цвету
-    public Collection<Faculty> getFacultiesByColor(String color) {
-        return facultyRepository.findAll().stream()
-                .filter((Faculty)faculty -> faculty.getColor().equals(color))
-                .collect(Collectors.toList());
+        logger.info("Was invoked method for get students by faculty id: {}", facultyId);
+        try {
+            if (!facultyRepository.existsById(facultyId)) {
+                logger.warn("Faculty with id {} not found when trying to get students", facultyId);
+                return Collections.emptyList();
+            }
+            Collection<Student> students = studentRepository.findByFacultyId(facultyId);
+            logger.debug("Successfully found {} students for faculty with id {}", students.size(), facultyId);
+            return students;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting students by faculty id {}: {}", facultyId, e.getMessage());
+            throw e;
+        }
     }
 }
 
