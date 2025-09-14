@@ -7,6 +7,10 @@ import ru.hogwarts.school_test.model.Student;
 import ru.hogwarts.school_test.repositories.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 public class StudentService {
@@ -110,7 +114,7 @@ public class StudentService {
 
     // Получить факультет студента
     public Faculty getFacultyByStudentId(Long studentId) {
-        try{
+        try {
             Student student = studentRepository.findById(studentId).orElse(null);
             if (student == null) {
                 logger.warn("Student with id {} not found when trying to get faculty", studentId);
@@ -164,6 +168,47 @@ public class StudentService {
             return students;
         } catch (Exception e) {
             logger.error("Error occurred while getting last five students: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    // Получение всех имен студентов, чье имя начинается с буквы А, отсортированных в алфавитном порядке в верхнем регистре
+    public List<String> getStudentNamesStartingWithA() {
+        logger.info("Was invoked method for get student names starting with A");
+        try {
+            List<String> names = studentRepository.findAll().stream()
+                    .parallel()
+                    .map(Student::getName)
+                    .filter(name -> name != null && !name.isEmpty() && name.toUpperCase().startsWith("A"))
+                    .map(String::toUpperCase)
+                    .sorted()
+                    .collect(toList());
+
+            logger.debug("Successfully found {} student names starting with A", names.size());
+            return names;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting student names starting with A: {}", e.getMessage());
+            throw e;
+        }
+    }
+    // Получение среднего возраста всех студентов
+    public double getAverageAgeOfAllStudents() {
+        logger.info("Was invoked method for get average age of all students");
+        try {
+            List<Student> students = studentRepository.findAll();
+            if (students.isEmpty()) {
+                logger.warn("No students found when calculating average age");
+                return 0.0;
+            }
+            double averageAge = students.stream()
+                    .mapToInt(Student::getAge)
+                    .average()
+                    .orElse(0.0);
+
+            logger.debug("Successfully calculated average age: {}", averageAge);
+            return averageAge;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting average age of all students: {}", e.getMessage());
             throw e;
         }
     }

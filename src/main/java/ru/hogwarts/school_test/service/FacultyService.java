@@ -10,6 +10,8 @@ import ru.hogwarts.school_test.repositories.StudentRepository;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -130,6 +132,29 @@ public class FacultyService {
             return students;
         } catch (Exception e) {
             logger.error("Error occurred while getting students by faculty id {}: {}", facultyId, e.getMessage());
+            throw e;
+        }
+    }
+    // Получение самого длинного названия факультета
+    public String getLongestFacultyName() {
+        logger.info("Was invoked method for get longest faculty name");
+        try {
+            List<Faculty> faculties = facultyRepository.findAll();
+            if (faculties.isEmpty()) {
+                logger.warn("No faculties found when searching for longest name");
+                return "";
+            }
+
+            String longestName = faculties.stream()
+                    .map(Faculty::getName)
+                    .filter(name -> name != null && !name.isEmpty())
+                    .max(Comparator.comparingInt(String::length))
+                    .orElse("");
+
+            logger.debug("Successfully found longest faculty name: {}", longestName);
+            return longestName;
+        } catch (Exception e) {
+            logger.error("Error occurred while getting longest faculty name: {}", e.getMessage());
             throw e;
         }
     }
