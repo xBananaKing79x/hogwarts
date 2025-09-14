@@ -19,7 +19,6 @@ public class InfoController {
 
     @GetMapping("/optimized")
     public long getSumOptimized() {
-        // Еще более оптимизированная реализация с использованием range
         long sum = Stream.iterate(1, a -> a + 1)
                 .limit(1000000)
                 .parallel()
@@ -27,7 +26,6 @@ public class InfoController {
                 .sum();
         return sum;
     }
-
     @GetMapping("/optimized2")
     public long getSumUsingMathFormula() {
         // Сумма арифметической прогрессии: S = n * (a1 + an) / 2
