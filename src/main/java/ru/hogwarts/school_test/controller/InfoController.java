@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.stream.Stream;
+
+import static java.lang.Integer.sum;
+
 @RestController
 public class InfoController {
 
@@ -13,5 +17,21 @@ public class InfoController {
     @GetMapping("/port")
     public int getPort() {
         return serverPort;
+    }
+
+    @GetMapping("/optimized")
+    public long getSumOptimized() {
+        int sum = Stream.iterate(1, a -> a + 1)
+                .limit(1000000)
+                .mapToInt(Integer::intValue)
+                .sum();
+        return sum;
+    }
+    @GetMapping("/optimized2")
+    public long getSumUsingMathFormula() {
+        // Сумма арифметической прогрессии: S = n * (a1 + an) / 2
+        // где n = 1000000, a1 = 1, an = 1000000
+        long n = 1000000L;
+        return n * (1 + n) / 2;
     }
 }

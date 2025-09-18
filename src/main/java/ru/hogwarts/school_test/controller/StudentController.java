@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping ("/api/student")
@@ -132,6 +133,17 @@ public class StudentController {
     @GetMapping("/last-five")
     public Collection<Student> getLastFiveStudents() {
         return studentService.getLastFiveStudents();
+    }
+
+    // Получение всех имен студентов, чье имя начинается с буквы А, отсортированных в алфавитном порядке в верхнем регистре
+    @GetMapping("/names-starting-with-a")
+    public List<String> getStudentNamesStartingWithA() {
+        return studentService.getStudentNamesStartingWithA();
+    }
+    // Получение среднего возраста всех студентов
+    @GetMapping("/average-age")
+    public double getAverageAgeOfAllStudents() {
+        return studentService.getAverageAgeOfAllStudents();
     }
 }
 
