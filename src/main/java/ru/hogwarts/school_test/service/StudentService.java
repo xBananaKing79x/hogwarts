@@ -177,7 +177,6 @@ public class StudentService {
         logger.info("Was invoked method for get student names starting with A");
         try {
             List<String> names = studentRepository.findAll().stream()
-                    .parallel()
                     .map(Student::getName)
                     .filter(name -> name != null && !name.isEmpty() && name.toUpperCase().startsWith("A"))
                     .map(String::toUpperCase)

@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.stream.Stream;
 
+import static java.lang.Integer.sum;
+
 @RestController
 public class InfoController {
 
@@ -19,10 +21,9 @@ public class InfoController {
 
     @GetMapping("/optimized")
     public long getSumOptimized() {
-        long sum = Stream.iterate(1, a -> a + 1)
+        int sum = Stream.iterate(1, a -> a + 1)
                 .limit(1000000)
-                .parallel()
-                .mapToLong(Integer::longValue)
+                .mapToInt(Integer::intValue)
                 .sum();
         return sum;
     }
