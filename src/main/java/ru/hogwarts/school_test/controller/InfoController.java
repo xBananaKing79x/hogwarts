@@ -22,6 +22,7 @@ public class InfoController {
     @GetMapping("/optimized")
     public long getSumOptimized() {
         int sum = Stream.iterate(1, a -> a + 1)
+                .parallel()
                 .limit(1000000)
                 .mapToInt(Integer::intValue)
                 .sum();
