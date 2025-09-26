@@ -238,23 +238,18 @@ public class StudentService {
 
         // Выводим имена 3 и 4 в параллельном потоке
         if (studentNames.size() > 2) {
-            executor.submit(() -> {
                 System.out.println(Thread.currentThread().getName() + " - " + studentNames.get(2));
                 if (studentNames.size() > 3) {
-                    System.out.println(Thread.currentThread().getName() + " - " + studentNames.get(3));
+                    System.out.println(Thread.currentThread().getName() + " - " + studentNames.get(4));
                 }
-            });
         }
         // Выводим имена 5 и 6 в еще одном параллельном потоке
         if (studentNames.size() > 4) {
-            executor.submit(() -> {
                 System.out.println(Thread.currentThread().getName() + " - " + studentNames.get(4));
                 if (studentNames.size() > 5) {
                     System.out.println(Thread.currentThread().getName() + " - " + studentNames.get(5));
                 }
-            });
         }
-
         // Завершаем выполнение пула потоков
         executor.shutdown();
 
