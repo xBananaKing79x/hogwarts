@@ -192,6 +192,7 @@ public class StudentService {
             throw e;
         }
     }
+
     // Получение среднего возраста всех студентов
     public double getAverageAgeOfAllStudents() {
         logger.info("Was invoked method for get average age of all students");
@@ -213,6 +214,7 @@ public class StudentService {
             throw e;
         }
     }
+
     public void printStudentsInParallel() {
         logger.info("Was invoked method for printing students in parallel Threads");
 
@@ -259,6 +261,60 @@ public class StudentService {
         executor.shutdown();
 
         logger.debug("Successfully printed students in parallel mode");
+    }
+
+    // Синхронизированный метод для вывода имени в консоль
+    private synchronized void printName(String name) {
+        System.out.println(Thread.currentThread().getName() + " - " + name);
+    }
+
+    // Метод для вывода имен студентов в синхронном режиме с использованием параллельных потоков
+    public void printStudentsSynchronized() {
+        logger.info("Was invoked method for printing students in synchronized mode");
+
+        List<String> studentNames = studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(name -> name != null && !name.isEmpty())
+                .limit(6) // Ограничиваем до 6 имен
+                .toList(); // Используем List вместо Collection
+
+        if (studentNames.size() < 6) {
+            logger.warn("Less than 6 students found, only {} will be printed", studentNames.size());
+        }
+
+        // Выводим первые два имени в основном потоке
+        if (studentNames.size() > 0) {
+            printName(studentNames.get(0));
+        }
+        if (studentNames.size() > 1) {
+            printName(studentNames.get(1));
+        }
+
+        // Создаем пул потоков для параллельной обработки
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        // Выводим имена 3 и 4 в параллельном потоке
+        if (studentNames.size() > 2) {
+            executor.submit(() -> {
+                printName(studentNames.get(2));
+                if (studentNames.size() > 3) {
+                    printName(studentNames.get(3));
+                }
+            });
+        }
+
+        // Выводим имена 5 и 6 в еще одном параллельном потоке
+        if (studentNames.size() > 4) {
+            executor.submit(() -> {
+                printName(studentNames.get(4));
+                if (studentNames.size() > 5) {
+                    printName(studentNames.get(5));
+                }
+            });
+        }
+
+        // Завершаем выполнение пула потоков
+        executor.shutdown();
     }
 }
 

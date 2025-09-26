@@ -150,5 +150,10 @@ public class StudentController {
         studentService.printStudentsInParallel();
         return ResponseEntity.ok("Students printed in parallel mode");
     }
+    @GetMapping("/print-synchronized")
+    public ResponseEntity<String> printStudentsSynchronized() {
+        studentService.printStudentsSynchronized();
+        return ResponseEntity.ok("Students printed in synchronized mode");
+    }
 }
 
