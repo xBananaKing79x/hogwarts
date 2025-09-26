@@ -145,5 +145,15 @@ public class StudentController {
     public double getAverageAgeOfAllStudents() {
         return studentService.getAverageAgeOfAllStudents();
     }
+    @GetMapping("/print-parallel")
+    public ResponseEntity<String> printStudentsParallel() {
+        studentService.printStudentsInParallel();
+        return ResponseEntity.ok("Students printed in parallel mode");
+    }
+    @GetMapping("/print-synchronized")
+    public ResponseEntity<String> printStudentsSynchronized() {
+        studentService.printStudentsSynchronized();
+        return ResponseEntity.ok("Students printed in synchronized mode");
+    }
 }
 
