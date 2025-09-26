@@ -8,6 +8,8 @@ import ru.hogwarts.school_test.repositories.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -210,6 +212,53 @@ public class StudentService {
             logger.error("Error occurred while getting average age of all students: {}", e.getMessage());
             throw e;
         }
+    }
+    public void printStudentsInParallel() {
+        logger.info("Was invoked method for printing students in parallel Threads");
+
+        List<String> studentNames = studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(name -> name != null && !name.isEmpty())
+                .toList(); // Используем List вместо Collection
+
+        if (studentNames.size() > 6) {
+            logger.warn("More than 6 students found, only 6 will be printed", studentNames.size());
+        }
+
+        // Выводим первые два имени в основном потоке
+        if (studentNames.size() > 0) {
+            System.out.println("Main Thread - " + studentNames.get(0));
+        }
+        if (studentNames.size() > 1) {
+            System.out.println("Main Thread - " + studentNames.get(1));
+        }
+
+        // Создаем пул потоков для параллельной обработки
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        // Выводим имена 3 и 4 в параллельном потоке
+        if (studentNames.size() > 2) {
+            executor.submit(() -> {
+                System.out.println(Thread.currentThread().getName() + " - " + studentNames.get(2));
+                if (studentNames.size() > 3) {
+                    System.out.println(Thread.currentThread().getName() + " - " + studentNames.get(3));
+                }
+            });
+        }
+        // Выводим имена 5 и 6 в еще одном параллельном потоке
+        if (studentNames.size() > 4) {
+            executor.submit(() -> {
+                System.out.println(Thread.currentThread().getName() + " - " + studentNames.get(4));
+                if (studentNames.size() > 5) {
+                    System.out.println(Thread.currentThread().getName() + " - " + studentNames.get(5));
+                }
+            });
+        }
+
+        // Завершаем выполнение пула потоков
+        executor.shutdown();
+
+        logger.debug("Successfully printed students in parallel mode");
     }
 }
 
